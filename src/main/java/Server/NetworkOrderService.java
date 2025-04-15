@@ -190,22 +190,17 @@ public class NetworkOrderService {
             conn.setAutoCommit(false);
 
             try {
-                // Create order and process items
                 int orderId = createOrder(conn, totalPrice);
                 processOrderItems(conn, orderId, cartItems);
                 clearUserCart();
-
-                // Commit transaction
                 conn.commit();
                 out.println("Order placed successfully! Order ID: " + orderId);
 
             } catch (SQLException e) {
-                // Rollback transaction on error
                 conn.rollback();
                 e.printStackTrace();
                 out.println("Error processing order. Transaction rolled back.");
             } finally {
-                // Restore auto-commit
                 conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
