@@ -86,7 +86,7 @@ public class NetworkAuthenticationService {
         return SignUpResult.ERROR;
     }
 
-    private boolean isUsernameExists(String username) {
+    boolean isUsernameExists(String username) {
         SQLQueryManager queryManager = new SQLQueryManager();
         String query = queryManager.getQuery("QUERY_CHECK_USERNAME");
         System.out.println("Checking username existence: " + query);

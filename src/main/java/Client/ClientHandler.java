@@ -17,9 +17,9 @@ import Server.NetworkProductService;
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
     private final DatabaseManager dbManager;
-    private PrintWriter out;
-    private BufferedReader in;
-    private UserSession session;
+    PrintWriter out;
+    BufferedReader in;
+    UserSession session;
 
     public ClientHandler(Socket socket, DatabaseManager dbManager) {
         this.clientSocket = socket;
@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
                 handleMainMenu();
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error handling client: " + e.getMessage());
         } finally {
             try {
@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleAuthentication() throws IOException {
+    void handleAuthentication() throws IOException {
         boolean authComplete = false;
 
         while (!authComplete) {
@@ -132,7 +132,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleMainMenu() throws IOException {
+    void handleMainMenu() throws Exception {
         boolean exit = false;
 
         while (!exit && session.isAuthenticated()) {
@@ -161,19 +161,19 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleViewProducts() throws IOException {
+    void handleViewProducts() throws IOException {
         NetworkProductService productService = new NetworkProductService(dbManager, out, in);
         NetworkCartService cartService = new NetworkCartService(dbManager, session, out);
         productService.viewProducts(cartService);
     }
 
-    private void handleViewCart() throws IOException {
+    void handleViewCart() throws Exception {
         NetworkCartService cartService = new NetworkCartService(dbManager, session, out);
         NetworkOrderService orderService = new NetworkOrderService(dbManager, session, out, in);
         cartService.viewCart(in, orderService);
     }
 
-    private void handleViewOrderHistory() throws IOException {
+    void handleViewOrderHistory() throws IOException {
         NetworkOrderService orderService = new NetworkOrderService(dbManager, session, out, in);
         orderService.viewOrderHistory();
     }

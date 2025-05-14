@@ -15,7 +15,7 @@ import Client.ClientHandler;
 public class ShopServer {
     private static final int PORT = 5000;
     private final DatabaseManager dbManager;
-    private final ExecutorService threadPool;
+    ExecutorService threadPool;
 
     public ShopServer(DatabaseManager dbManager) {
         this.dbManager = dbManager;
@@ -37,13 +37,13 @@ public class ShopServer {
         }
     }
 
-    private void handleClientConnection(ServerSocket serverSocket) throws IOException {
+    void handleClientConnection(ServerSocket serverSocket) throws IOException {
         Socket clientSocket = serverSocket.accept();
         log("New client connected: " + clientSocket.getInetAddress().getHostAddress());
         threadPool.submit(new ClientHandler(clientSocket, dbManager));
     }
 
-    private void shutdownThreadPool() {
+    void shutdownThreadPool() {
         log("Shutting down thread pool...");
         threadPool.shutdown();
     }
@@ -67,7 +67,7 @@ public class ShopServer {
         new ShopServer(dbManager).start();
     }
 
-    private static Properties loadDatabaseConfig() {
+    static Properties loadDatabaseConfig() {
         Properties config = new Properties();
         try (InputStream input = new FileInputStream("src/main/java/Configurations/db-config.properties")) {
             if (input == null) {
@@ -82,7 +82,7 @@ public class ShopServer {
         return config;
     }
 
-    private static DatabaseManager initializeDatabaseManager(Properties config) {
+    static DatabaseManager initializeDatabaseManager(Properties config) {
         DatabaseManager dbManager = new DatabaseManager(
                 config.getProperty("db.url"),
                 config.getProperty("db.user"),
